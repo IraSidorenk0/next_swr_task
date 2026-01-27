@@ -11,10 +11,3 @@ export interface Post {
   createdAt: string;
   updatedAt: string;
 }
-
-export interface PostFormData {
-  title: string;
-  content: string;
-  tags: string[];
-  likes?: number;
-}

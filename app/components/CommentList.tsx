@@ -1,10 +1,7 @@
 'use client';
 
 import { useFetchComments } from '../../firebase-actions/useComments';
-
-interface CommentListProps {
-  postId: string;
-}
+import { CommentListProps } from '../types/interfaces';
 
 export default function CommentList({ postId }: CommentListProps) {
   const { comments, isLoading: loading, error, mutate } = useFetchComments(postId);

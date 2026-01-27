@@ -1,7 +1,7 @@
 'use client';
 
+import { LoginFormProps } from '../types/interfaces';
 import { useActionState } from 'react';
-import { useFormStatus } from 'react-dom';
 import { useState } from 'react';
 import { z } from 'zod';
 import { signInAction } from '../../firebase/actions';
@@ -19,11 +19,6 @@ const loginSchema = z.object({
     .min(6, 'Password must be at least 6 characters')
 });
 
-interface LoginFormProps {
-  onSuccess?: () => void;
-  onSwitchToRegister?: () => void;
-  callbackUrl?: string;
-}
 
 export default function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormProps) {
   const [state, formAction] = useActionState(signInAction, null);

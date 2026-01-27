@@ -80,3 +80,11 @@ export interface Comment {
   createdAt: Date | string;
   updatedAt: Date | string;
 }
+
+export type InlineNoticeProps = {
+  tone?: 'info' | 'warning' | 'success' | 'error';
+  message: string;
+  actionLabel?: string;
+  onAction?: () => void;
+  className?: string;
+};

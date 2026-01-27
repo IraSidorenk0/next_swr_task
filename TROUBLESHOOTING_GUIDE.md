@@ -1,9 +1,9 @@
-# Firebase Troubleshooting Guide
+# Firebase Admin Troubleshooting Guide
 
-This guide covers common issues with Firebase integration, including post creation errors, authentication problems, and environment variable configuration.
+This guide covers common issues with Firebase Admin SDK integration, including server-side authentication problems, environment variable configuration, and API route errors.
 
 ## Current Issue
-You're experiencing `400 (Bad Request)` errors when trying to create posts. The error occurs at the Firestore Write channel level.
+You're experiencing server-side errors when trying to perform operations through API routes. Since this project uses Firebase Admin SDK only, all Firebase operations are handled server-side.
 
 ## Step-by-Step Solution
 
@@ -33,47 +33,37 @@ service cloud.firestore {
 2. Check the browser console for the detailed debug information
 3. If it works, the issue was with the security rules
 
-### Step 3: If Still Not Working - Check Authentication
+### Step 3: If Still Not Working - Check Server-Side Authentication
 
-1. Open browser Developer Tools (F12)
-2. Go to Application tab > Local Storage
-3. Look for Firebase auth tokens
-4. Try logging out and logging back in
-5. Clear browser cache and cookies
-6. Try in an incognito/private browser window
+1. Check server logs for detailed error messages
+2. Verify environment variables are loaded correctly
+3. Ensure Firebase Admin SDK is initializing properly
+4. Check API route implementations for proper error handling
 
-### Step 4: If Still Not Working - Network Issues
+### Step 4: If Still Not Working - Server Configuration Issues
 
-The 400 errors might be network-related. Try:
+The errors might be related to server configuration. Try:
 
-1. Check if you're behind a corporate firewall
-2. Try using a different network (mobile hotspot)
-3. Disable browser extensions temporarily
-4. Try a different browser
+1. Restart the development server: `npm run dev`
+2. Verify all environment variables are set correctly
+3. Check if the service account has proper permissions
+4. Ensure Firebase project is properly configured
 
-### Step 5: Alternative Security Rules (If Step 1 Didn't Work)
+### Step 5: Check Firebase Admin SDK Configuration
 
-If the permissive rules didn't work, try even more permissive rules:
+If the basic setup didn't work, verify your Firebase Admin configuration:
 
-```javascript
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if true;
-    }
-  }
-}
-```
-
-**⚠️ WARNING: These rules allow anyone to read/write your database. Only use for testing!**
+1. Ensure all `FIREBASE_ADMIN_*` environment variables are present
+2. Verify the private key format is correct (newlines escaped as `\n`)
+3. Check that the project ID matches your Firebase project
+4. Confirm the service account email is correct
 
 ### Step 6: Verify Firebase Project Configuration
 
 1. Go to [Firebase Console](https://console.firebase.google.com/project/my-project-1516289182804/settings/general)
-2. Verify the project ID matches: `my-project-1516289182804`
+2. Verify the project ID matches your `FIREBASE_ADMIN_PROJECT_ID`
 3. Check that Firestore is enabled
-4. Verify your app is registered in the project
+4. Ensure the service account has proper permissions
 
 ### Step 7: Check Environment Variable Configuration
 
@@ -98,34 +88,54 @@ Since this project uses environment variables for Firebase Admin SDK, verify:
    npm run dev
    ```
 
-### Step 8: Check Firebase Console Logs
+### Step 8: Check Server Logs and Firebase Console
 
-1. Go to [Firebase Console](https://console.firebase.google.com/project/my-project-1516289182804/firestore)
-2. Check the "Usage" tab for any quota issues
-3. Look for any error messages or warnings
+1. Check your server console for detailed error messages
+2. Go to [Firebase Console](https://console.firebase.google.com/project/my-project-1516289182804/firestore)
+3. Check the "Usage" tab for any quota issues
+4. Look for any error messages or warnings in Firebase Console
 
-### Step 9: Run the Debug Script
+### Step 9: Test Firebase Admin Connection
 
-Run the debug script to get more detailed information:
+Create a simple test to verify Firebase Admin SDK is working:
 
-```bash
-node test-firebase-debug.js
+```javascript
+// test-firebase-admin.js
+const { adminDb, adminAuth } = require('./firebase/firebase-admin');
+
+async function testConnection() {
+  try {
+    // Test Firestore
+    const testDoc = await adminDb.collection('test').doc('connection').set({
+      timestamp: new Date(),
+      status: 'connected'
+    });
+    console.log('✅ Firestore connection successful');
+    
+    // Test Auth
+    const users = await adminAuth.listUsers(1);
+    console.log('✅ Auth connection successful');
+    
+  } catch (error) {
+    console.error('❌ Firebase Admin connection failed:', error);
+  }
+}
+
+testConnection();
 ```
-
-Make sure to update the password in the script first.
 
 ## Expected Behavior After Fix
 
 When working correctly, you should see:
 
-1. Console logs showing successful post creation
-2. No 400 errors in the network tab
-3. Post appears in the Firebase Console > Firestore Database
-4. Success message in the UI
+1. Server logs showing successful Firebase Admin initialization
+2. No server-side errors in API routes
+3. Data appears in the Firebase Console > Firestore Database
+4. Success responses from API endpoints
 
-## Final Security Rules (After Testing)
+## Security Rules (Server-Side Access)
 
-Once everything works, replace the temporary rules with secure ones:
+Since this project uses Firebase Admin SDK, security rules are bypassed for server-side operations. However, it's still recommended to have proper rules for any potential client-side access:
 
 ```javascript
 rules_version = '2';
@@ -166,14 +176,13 @@ service cloud.firestore {
 
 | Error Code | Cause | Solution |
 |------------|-------|----------|
-| `permission-denied` | Security rules blocking access | Update security rules |
-| `unauthenticated` | User not logged in | Re-login user |
-| `invalid-argument` | Malformed data | Check data validation |
+| `permission-denied` | Security rules blocking access | Not applicable for Admin SDK (bypasses rules) |
+| `unauthenticated` | Invalid session/token | Check server-side authentication logic |
+| `invalid-argument` | Malformed data in API routes | Check API route data validation |
 | `resource-exhausted` | Firebase quotas exceeded | Check Firebase usage |
-| `400 Bad Request` | Network/protocol issue | Check network, try different browser |
 | **Environment Variable Errors** | Missing/incorrect Firebase Admin config | Check `.env` file, verify private key format |
 | **Admin SDK Init Failed** | Service account configuration issues | Verify all `FIREBASE_ADMIN_*` variables |
-| **NextAuth Firestore Adapter Error** | Incorrect service account config | Check environment variables in NextAuth route |
+| **API Route Errors** | Server-side implementation issues | Check API route code and error handling |
 
 ## Environment Variable Specific Issues
 
@@ -200,9 +209,10 @@ service cloud.firestore {
 
 If none of these steps work:
 
-1. Share the complete console error logs
-2. Share your current Firebase Security Rules
+1. Share the complete server error logs
+2. Share your current environment variables (without sensitive data)
 3. Confirm you can access Firebase Console
-4. Try creating a post directly in Firebase Console (if possible)
+4. Check if the service account has proper permissions in Firebase Console
+5. Verify the API route implementations are correct
 
 

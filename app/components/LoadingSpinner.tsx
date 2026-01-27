@@ -1,10 +1,5 @@
 'use client';
-
-interface LoadingSpinnerProps {
-  message?: string;
-  size?: 'sm' | 'md' | 'lg';
-}
-
+import { LoadingSpinnerProps } from '../types/interfaces';
 export default function LoadingSpinner({ message = 'Loading...', size = 'md' }: LoadingSpinnerProps) {
   const sizeClasses = {
     sm: 'min-h-32',

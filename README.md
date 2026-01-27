@@ -1,19 +1,21 @@
-# SWR Test Task - Next.js Firebase Application
+# SWR Test Task - Next.js Firebase Admin Application
 
-This is a [Next.js](https://nextjs.org) project with Firebase integration, demonstrating SWR (Stale-While-Revalidate) data fetching patterns with Firebase Authentication and Firestore.
+This is a [Next.js](https://nextjs.org) project with Firebase Admin integration, demonstrating SWR (Stale-While-Revalidate) data fetching patterns with server-side Firebase Authentication and Firestore operations.
 
 ## Features
 
-- **Firebase Authentication**: Email/password authentication with session management
-- **Firestore Database**: Real-time database for posts and comments
-- **SWR Integration**: Efficient data fetching and caching
+- **Firebase Admin SDK**: Server-side authentication and Firestore operations
+- **API Routes**: All Firebase operations handled through secure API endpoints
+- **SWR Integration**: Efficient data fetching and caching with API routes
 - **Environment-based Configuration**: Secure Firebase admin configuration via environment variables
+- **Session Management**: Secure cookie-based authentication
 
 ## Prerequisites
 
 1. **Node.js** (v18 or higher)
 2. **Firebase Project** with Firestore and Authentication enabled
 3. **Environment Variables** configured (see setup below)
+4. **Service Account** with proper Firebase permissions
 
 ## Setup
 
@@ -27,19 +29,9 @@ npm install
 
 ### 2. Environment Configuration
 
-Create a `.env` file in the root directory with your Firebase configuration:
+Create a `.env` file in the root directory with your Firebase Admin configuration:
 
 ```env
-# Public Firebase config (safe to expose)
-NEXT_PUBLIC_FIREBASE_DATABASE_URL=https://your-project.firebaseio.com
-NEXT_PUBLIC_FIREBASE_API_KEY=your-api-key
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
-NEXT_PUBLIC_FIREBASE_APP_ID=your-app-id
-NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your-measurement-id
-
 # Firebase Admin SDK (keep these secret!)
 FIREBASE_ADMIN_TYPE=service_account
 FIREBASE_ADMIN_PROJECT_ID=your-project-id
@@ -53,7 +45,7 @@ FIREBASE_ADMIN_AUTH_PROVIDER_X509_CERT_URL=https://www.googleapis.com/oauth2/v1/
 FIREBASE_ADMIN_CLIENT_X509_CERT_URL=https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-xxx%40your-project.iam.gserviceaccount.com
 FIREBASE_ADMIN_UNIVERSE_DOMAIN=googleapis.com
 
-# NextAuth
+# Optional: NextAuth (if using)
 NEXTAUTH_SECRET=your-nextauth-secret
 ```
 
@@ -64,7 +56,7 @@ NEXTAUTH_SECRET=your-nextauth-secret
 3. Enable **Firestore Database** and **Authentication**
 4. In Authentication → Sign-in method, enable **Email/Password**
 5. Generate service account keys in Project Settings → Service accounts
-6. Add the configuration to your `.env` file
+6. Add the Firebase Admin configuration to your `.env` file
 
 For detailed setup instructions, see [FIREBASE_SETUP_GUIDE.md](./FIREBASE_SETUP_GUIDE.md).
 
@@ -89,12 +81,11 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ```
 ├── app/                    # Next.js app directory
 │   ├── actions/           # Server actions
-│   ├── api/               # API routes
+│   ├── api/               # API routes (Firebase operations)
 │   ├── auth/              # Authentication pages
 │   └── components/        # React components
 ├── firebase/              # Firebase configuration
-│   ├── firebase-admin.ts  # Firebase Admin SDK setup
-│   └── firebase.ts       # Firebase Client SDK setup
+│   └── firebase-admin.ts  # Firebase Admin SDK setup
 ├── firebase-actions/      # Custom hooks with SWR
 ├── store/                 # State management
 └── types/                 # TypeScript type definitions
@@ -103,19 +94,33 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ## Key Features
 
 ### Authentication
-- Email/password authentication
-- Session management with secure cookies
-- Server-side authentication verification
+- Server-side email/password authentication
+- Secure session management with HTTP-only cookies
+- Firebase Admin SDK for user verification
+- API route-based authentication
 
 ### Data Management
-- SWR for efficient data fetching
-- Real-time updates with Firestore
+- SWR for efficient data fetching from API routes
+- Server-side Firestore operations through Admin SDK
+- Real-time updates via API polling
 - Optimistic UI updates
 
-### Environment-based Configuration
-- Firebase Admin SDK configured via environment variables
-- No service account JSON files needed
-- Secure configuration management
+### Security
+- Firebase Admin SDK bypasses client-side security rules
+- Environment-based configuration (no exposed credentials)
+- Secure cookie-based session management
+- Server-side data validation
+
+## Architecture Overview
+
+This application uses a **server-side Firebase architecture**:
+
+1. **Client**: React components that call API routes
+2. **API Routes**: Handle all Firebase operations using Admin SDK
+3. **Firebase Admin**: Server-side SDK with full permissions
+4. **Authentication**: Session-based with secure cookies
+
+All Firebase operations (authentication, Firestore reads/writes) are performed server-side through API routes, ensuring security and eliminating the need for client-side Firebase configuration.
 
 ## Troubleshooting
 

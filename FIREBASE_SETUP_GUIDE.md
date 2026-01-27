@@ -1,14 +1,14 @@
-# Firebase Setup Guide (Client SDK + Firebase Admin)
+# Firebase Admin Setup Guide
 
-This project uses **both** the Firebase client SDK (in the browser) and the **Firebase Admin SDK** (on the server) for authentication and Firestore access.
+This project uses **only the Firebase Admin SDK** (server-side) for authentication and Firestore access. All Firebase operations are handled through API routes and server actions.
 
-**Important**: This project now uses **environment variables** for Firebase Admin SDK configuration instead of JSON service account files for better security and deployment flexibility.
+**Important**: This project uses **environment variables** for Firebase Admin SDK configuration instead of JSON service account files for better security and deployment flexibility.
 
 Use this guide to:
 
 1. Configure your Firebase project and service account.
 2. Set up the Admin SDK using environment variables in `firebase/firebase-admin.ts`.
-3. Understand how session cookies and authentication work in this app.
+3. Understand how server-side authentication and API routes work in this app.
 
 ---
 
@@ -21,44 +21,17 @@ Use this guide to:
 
 ---
 
-## 2. Client SDK Configuration (`firebase/firebase.ts`)
+## 2. Firebase Admin SDK Setup (`firebase/firebase-admin.ts`)
 
-The client SDK is used in the browser for things like `signInWithEmailAndPassword` and Firestore reads/writes.
+The Admin SDK runs **only on the server** (API routes, server actions). It uses **environment variables** instead of JSON service account files.
 
-In `firebase/firebase.ts` you should have something like:
-
-```ts
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
-
-const firebaseConfig = {
-  apiKey: '... ',
-  authDomain: '... ',
-  projectId: '... ',
-  // etc.
-};
-
-const firebaseApp = initializeApp(firebaseConfig);
-export const auth = getAuth(firebaseApp);
-export const db = getFirestore(firebaseApp);
-```
-
-Make sure these values match your project’s **Web app** configuration in the Firebase console.
-
----
-
-## 3. Firebase Admin SDK Setup (`firebase/firebase-admin.ts`)
-
-The Admin SDK runs **only on the server** (API routes, server actions, NextAuth). It now uses **environment variables** instead of JSON service account files.
-
-### 3.1 Generate Service Account Key
+### 2.1 Generate Service Account Key
 
 1. In Firebase Console, go to **Project settings → Service accounts**.
 2. Click **Generate new private key** for the Firebase Admin SDK.
 3. Download the JSON file - you'll need its contents for the environment variables.
 
-### 3.2 Configure Environment Variables
+### 2.2 Configure Environment Variables
 
 Create or update your `.env` file with the Firebase Admin SDK configuration:
 
@@ -82,7 +55,7 @@ FIREBASE_ADMIN_UNIVERSE_DOMAIN=googleapis.com
 - Wrap the entire key in quotes
 - Escape any existing quotes in the key
 
-### 3.3 Admin SDK Implementation
+### 2.3 Admin SDK Implementation
 
 In `firebase/firebase-admin.ts` the configuration now uses environment variables:
 
@@ -115,72 +88,59 @@ export const adminDb = getFirestore(adminApp);
 export const adminAuth = getAuth(adminApp);
 ```
 
-### 3.4 NextAuth Integration
+### 2.4 API Route Integration
 
-The NextAuth route also uses the same environment variables:
+The API routes also use the same environment variables for Firebase Admin operations:
 
 ```ts
-// app/api/auth/[...nextauth]/route.ts
-import { cert } from 'firebase-admin/app';
-import type { ServiceAccount } from 'firebase-admin';
+// app/api/posts/route.ts
+import { adminDb, adminAuth } from '@/firebase/firebase-admin';
 
-const firebaseServiceAccount: ServiceAccount = {
-  projectId: process.env.FIREBASE_ADMIN_PROJECT_ID as string,
-  clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL as string,
-  privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, '\n') as string,
-};
+export async function GET(request: Request) {
+  // Use adminDb for Firestore operations
+  const posts = await adminDb.collection('posts').get();
+  // ...
+}
 
-export const authOptions: NextAuthOptions = {
-  adapter: FirestoreAdapter({
-    credential: cert(firebaseServiceAccount),
-  }),
-  // ... other configuration
-};
+export async function POST(request: Request) {
+  // Use adminAuth for authentication verification
+  const sessionCookie = request.cookies.get('session')?.value;
+  const decodedClaims = await adminAuth.verifySessionCookie(sessionCookie, true);
+  // ...
+}
 ```
 
 ---
 
-## 4. How Authentication Works (Session Cookies)
+## 3. How Authentication Works (Server-Side)
 
-The app uses a **session cookie** set by the server after sign-in. Key pieces:
+The app uses **server-side authentication** with session cookies. Key pieces:
 
-- `firebase/actions.ts` (or `app/auth/actions.ts`) signs the user in and creates a session cookie using `adminAuth.createSessionCookie`.
+- `app/auth/actions.ts` handles sign-in and creates session cookies using `adminAuth.createSessionCookie`.
 - The cookie is stored as `session` via `next/headers` `cookies()` API.
-- `firebase/auth.ts` and other server code read and verify this cookie with `getAuth().verifySessionCookie(...)`.
+- API routes and server actions read and verify this cookie with `adminAuth.verifySessionCookie(...)`.
+- All Firebase operations are performed through API routes using the Admin SDK.
 
-### 4.1 Sign-in flow (example)
+### 3.1 Sign-in flow (example)
 
-1. Client calls a server action and sends `email` and `password`.
-2. Server uses the **client SDK** (`signInWithEmailAndPassword`) or Admin SDK to authenticate.
+1. Client submits email/password to an API route (`/api/auth/signin`).
+2. Server uses the Admin SDK to authenticate credentials.
 3. Server calls `adminAuth.createSessionCookie(idToken, { expiresIn })`.
 4. Server sets the `session` cookie (HTTP-only, secure in production).
-5. Subsequent server requests use `adminAuth.verifySessionCookie(sessionCookie, true)` to get the Firebase user.
+5. Subsequent API requests use `adminAuth.verifySessionCookie(sessionCookie, true)` to get the Firebase user.
 
 If you see errors here, check:
 
 - All Firebase Admin environment variables are set correctly in your `.env` file.
 - The project ID in the environment variables matches your Firebase project.
 - The private key is properly formatted with `\n` for newlines and wrapped in quotes.
-- `NEXTAUTH_SECRET` (and any other required env vars) are set correctly.
+- API routes are properly implementing authentication checks.
 
 ---
 
-## 5. Firestore Security Rules (Recommended Dev Setup)
+## 4. Firestore Security Rules
 
-Even with Firebase Admin, Firestore security rules still apply to **client SDK** access. For local development you can use permissive rules:
-
-```javascript
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if true; // Development only
-    }
-  }
-}
-```
-
-For production, tighten the rules to require authentication, for example:
+Since this project uses Firebase Admin SDK, security rules are **bypassed for server-side operations**. However, it's still recommended to have proper rules for security and potential future client-side access:
 
 ```javascript
 rules_version = '2';
@@ -199,9 +159,61 @@ service cloud.firestore {
 }
 ```
 
-Publish the rules in **Firestore Database → Rules**.
+**Note**: Admin SDK operations bypass these rules, but they're still important for security.
 
----
+## 5. API Routes and Server Actions
+
+All Firebase operations are handled through API routes and server actions:
+
+### 5.1 Example API Route Structure
+
+```ts
+// app/api/posts/route.ts
+import { adminDb, adminAuth } from '@/firebase/firebase-admin';
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  try {
+    const sessionCookie = request.cookies.get('session')?.value;
+    
+    // Verify authentication
+    const decodedClaims = await adminAuth.verifySessionCookie(sessionCookie!, true);
+    
+    // Fetch data using Admin SDK
+    const postsSnapshot = await adminDb.collection('posts').get();
+    const posts = postsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    
+    return NextResponse.json(posts);
+  } catch (error) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+}
+```
+
+### 5.2 Server Actions
+
+```ts
+// app/actions/posts.ts
+'use server';
+
+import { adminDb, adminAuth } from '@/firebase/firebase-admin';
+import { cookies } from 'next/headers';
+
+export async function createPost(title: string, content: string) {
+  const sessionCookie = cookies().get('session')?.value;
+  const decodedClaims = await adminAuth.verifySessionCookie(sessionCookie!, true);
+  
+  const post = {
+    title,
+    content,
+    authorId: decodedClaims.uid,
+    createdAt: new Date().toISOString(),
+  };
+  
+  const docRef = await adminDb.collection('posts').add(post);
+  return { id: docRef.id, ...post };
+}
+```
 
 ## 6. Troubleshooting
 
@@ -211,11 +223,8 @@ Publish the rules in **Firestore Database → Rules**.
 - **`verifySessionCookie` or `createSessionCookie` errors**  
   Confirm that the ID token or custom token is created from the same project as the Admin SDK configuration.
 
-- **Client SDK permission / 400 errors**  
-  Re-check Firestore rules and that the client is using the correct project ID and API key.
-
-- **NextAuth issues**  
-  Make sure `NEXTAUTH_SECRET` is set and the Firestore adapter is configured with the same environment variables.
+- **API route authentication errors**  
+  Check that session cookies are being properly set and verified in API routes.
 
 - **Environment variable issues**  
   - Verify the `.env` file is in the project root
@@ -225,4 +234,10 @@ Publish the rules in **Firestore Database → Rules**.
 
 - **TypeScript errors**  
   The environment variables use type assertions (`as string`) to satisfy TypeScript. If you prefer stricter typing, you can add validation logic.
+
+- **Permission errors**  
+  Since Admin SDK bypasses security rules, permission errors usually indicate:
+  - Incorrect service account permissions
+  - Invalid environment variable configuration
+  - Firebase project misconfiguration
 

@@ -64,10 +64,17 @@ export interface PostCardProps {
   currentUser: AppUser | null;
 }
 
-export interface EmptyStateProps {
-  title: string;
-  description: string;
-  icon?: string;
-  actionLabel?: string;
-  onAction?: () => void;
+export interface LoadingSpinnerProps {
+  message?: string;
+  size?: 'sm' | 'md' | 'lg';
+}
+
+export interface LoginFormProps {
+  onSuccess?: () => void;
+  onSwitchToRegister?: () => void;
+  callbackUrl?: string;
+}
+
+export interface CommentListProps {
+  postId: string;
 }

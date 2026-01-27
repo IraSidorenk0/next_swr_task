@@ -1,12 +1,6 @@
 'use client';
 
-type InlineNoticeProps = {
-  tone?: 'info' | 'warning' | 'success' | 'error';
-  message: string;
-  actionLabel?: string;
-  onAction?: () => void;
-  className?: string;
-};
+import { InlineNoticeProps } from '../types';
 
 const toneClasses: Record<string, string> = {
   info: 'bg-blue-50 text-blue-800 border-blue-200',
