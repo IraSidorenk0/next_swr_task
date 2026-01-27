@@ -80,6 +80,8 @@ export default function PostList({ currentUser }: {
 
   const handlePostCreated = () => {
     setShowPostForm(false);
+    // Trigger data refresh to ensure the post list is updated
+    mutate();
   };
 
   const cancelEditPost = () => {
