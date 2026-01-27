@@ -96,9 +96,10 @@ export default function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormPr
       } else {
         setSubmitMessage(result?.error || 'Error logging in');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Firebase auth error:', error);
-      setSubmitMessage(error.message || 'Invalid email or password');
+      const errorMessage = error instanceof Error ? error.message : 'Invalid email or password';
+      setSubmitMessage(errorMessage);
     }
     
     setIsSubmitting(false);

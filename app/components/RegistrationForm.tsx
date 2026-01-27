@@ -119,7 +119,7 @@ export default function RegistrationForm({ onSuccess, onSwitchToLogin }: Registr
               onSuccess();
             }, 1500);
           }
-        } catch (error: any) {
+        } catch (error: unknown) {
           console.error('Error signing in with custom token:', error);
           setServerError('Error signing in after registration. Please try logging in manually.');
         }

@@ -1,6 +1,5 @@
 import PostList from './components/PostList';
 import { getCurrentUser } from '../firebase/auth';
-import type { AppUser } from './types';
 
 export default async function Home() {
   const currentUser = await getCurrentUser();
