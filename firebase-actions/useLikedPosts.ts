@@ -1,4 +1,4 @@
-import useSWR, { SWRConfiguration } from 'swr';
+import useSWR, { SWRConfiguration, mutate as globalMutate } from 'swr';
 
 // Fetcher for SWR
 const fetcher = async ([url, userId]: [string, string]) => {
@@ -38,7 +38,23 @@ export const useLikedPosts = (userId?: string, options: UseLikedPostsOptions = {
       ? likedPostIds.filter(id => id !== postId)
       : [...likedPostIds, postId];
 
-    // 2. Use mutate to handle the optimistic update
+    // 2. Optimistically update the posts cache for immediate UI feedback
+    globalMutate(
+      (key) => Array.isArray(key) && key[0] === 'posts',
+      (currentData: any[] = []) => {
+        return currentData.map((post: any) => 
+          post.id === postId 
+            ? { 
+                ...post, 
+                likes: isLiked ? Math.max(0, post.likes - 1) : post.likes + 1
+              } 
+            : post
+        );
+      },
+      false // Don't revalidate yet, we'll do that after the API call
+    );
+
+    // 3. Use mutate to handle the optimistic update for liked posts
     await mutate(
       async () => {
         const res = await fetch('/api/likes', {
@@ -48,6 +64,13 @@ export const useLikedPosts = (userId?: string, options: UseLikedPostsOptions = {
         });
         
         if (!res.ok) throw new Error('Failed to update likes');
+        
+        const result = await res.json();
+        
+        // Trigger revalidation of posts cache to sync with server
+        globalMutate(
+          (key) => Array.isArray(key) && key[0] === 'posts'
+        );
         
         // Return the final data (or trigger a revalidation)
         return optimisticData; 

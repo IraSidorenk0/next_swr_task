@@ -196,6 +196,42 @@ export const usePosts = (filters?: { author?: string; tag?: string }) => {
     );
   };
 
+  const updatePostLikes = async (postId: string, increment: boolean) => {
+    await mutate(
+      async (currentData = []) => {
+        const res = await fetch('/api/posts/likes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ postId, increment }),
+        });
+        
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.error || 'Failed to update likes');
+        }
+        
+        const { likes } = await res.json();
+        
+        return currentData.map(post => 
+          post.id === postId ? { ...post, likes } : post
+        );
+      },
+      {
+        optimisticData: (currentPosts = []) => 
+          currentPosts.map(post => 
+            post.id === postId 
+              ? { 
+                  ...post, 
+                  likes: increment ? post.likes + 1 : Math.max(0, post.likes - 1)
+                } 
+              : post
+          ),
+        rollbackOnError: true,
+        revalidate: true,
+      }
+    );
+  };
+
   return {
     posts,
     isLoading: !error && !posts,
@@ -203,6 +239,6 @@ export const usePosts = (filters?: { author?: string; tag?: string }) => {
     createPost,
     updatePost,
     deletePost,
-    mutate,
+    mutate
   };
 };

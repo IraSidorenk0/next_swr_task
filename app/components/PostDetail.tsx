@@ -5,6 +5,7 @@ import InlineNotice from './InlineNotice';
 import CommentForm from './CommentForm';
 import CommentList from './CommentList';
 import { useLikedPosts } from '../../firebase-actions/useLikedPosts';
+import { usePosts } from '../../firebase-actions/usePosts';
 import { useRouter } from 'next/navigation';
 import { PostDetailProps } from '../types/interfaces';
 
@@ -12,9 +13,13 @@ export default function PostDetail({ postId, currentUser, currentPost }: PostDet
   const [loading, setLoading] = useState(!currentPost);
   const [liking, setLiking] = useState(false);
   const { likedPostIds, toggleLike, isLoading, error } = useLikedPosts(currentUser?.uid);
+  const { posts } = usePosts();
   const isLiked = currentPost ? likedPostIds.includes(currentPost.id) : false;
   const [showLoginNotice, setShowLoginNotice] = useState(false);
   const router = useRouter();  
+
+  // Get the most up-to-date likes count from SWR cache
+  const currentLikes = posts?.find(post => post.id === currentPost?.id)?.likes ?? currentPost?.likes ?? 0;  
 
   const handleLike = async () => {
     if (!currentUser) {
@@ -23,10 +28,14 @@ export default function PostDetail({ postId, currentUser, currentPost }: PostDet
     }
     if (!currentPost) return;
     
+    setLiking(true);
+    
     try {
       await toggleLike(currentPost.id);
     } catch (error) {
       console.error('Error toggling like:', error);
+    } finally {
+      setLiking(false);
     }
   };
 
@@ -121,7 +130,7 @@ export default function PostDetail({ postId, currentUser, currentPost }: PostDet
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
                 </svg>
-                <span>{currentPost?.likes} likes</span>
+                <span>{currentLikes} likes</span>
               </div>
             </div>
             
