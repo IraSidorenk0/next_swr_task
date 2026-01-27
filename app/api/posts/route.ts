@@ -19,10 +19,10 @@ export async function GET() {
         tags: Array.isArray(data.tags) ? data.tags : [],
         likes: typeof data.likes === 'number' ? data.likes : 0,
         likedBy: Array.isArray(data.likedBy) ? data.likedBy : [],
-        createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : new Date().toISOString(),
-        updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate().toISOString() : new Date().toISOString(),
+        createdAt: data.createdAt || '',
+        updatedAt: data.updatedAt || '',
       };
-    });
+    }).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     return NextResponse.json({ posts });
   } catch (error) {

@@ -2,7 +2,6 @@ import { initializeApp, getApps, cert, App } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';
 import { ServiceAccount } from 'firebase-admin';
-import * as path from 'path';
 
 // Initialize Firebase Admin with environment variables
 const serviceAccount: ServiceAccount = {
