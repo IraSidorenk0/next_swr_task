@@ -45,11 +45,11 @@ export async function signInAction(prevState: any, formData: FormData) {
     });
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Authentication error:', error);
     return { 
       success: false, 
-      error: error.message || 'Invalid authentication' 
+      error: error instanceof Error ? error.message : 'Invalid authentication' 
     };
   }
 }
@@ -77,7 +77,7 @@ export async function registerAndSignInAction(prevState: any, formData: FormData
       displayName: userRecord.displayName,
       customToken
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Registration error:', error);
     
     let errorMessage = 'Registration error. Please try again.';
@@ -113,7 +113,7 @@ export async function signOut() {
       
       // Revoke all refresh tokens for the user
       await adminAuth.revokeRefreshTokens(decodedClaims.sub);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error during token revocation:', error);
       return { success: false, error: 'Failed to revoke session' };
     }
