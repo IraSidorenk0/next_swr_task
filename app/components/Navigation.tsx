@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import ThemeToggleButton from './ThemeToggleButton';
 
 type User = {
   uid: string;
@@ -48,7 +49,7 @@ export default function Navigation({ currentUser, commentsCount = 0 }: Navigatio
   };
 
   return (
-    <nav className="bg-white shadow-lg sticky top-0 z-50">
+    <nav className="bg-white shadow-lg sticky top-0 z-50 dark:bg-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -57,15 +58,15 @@ export default function Navigation({ currentUser, commentsCount = 0 }: Navigatio
               <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-sm mr-3">
                 BB
               </div>
-              <span className="text-xl font-bold text-gray-900 hidden sm:block">Best Blog</span>
+              <span className="text-xl font-bold text-gray-900 hidden sm:block dark:text-gray-200">Best Blog</span>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-2">
             <Link 
               href="/" 
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors dark:text-gray-300 dark:hover:text-white"
             >
               Home
             </Link>
@@ -87,7 +88,7 @@ export default function Navigation({ currentUser, commentsCount = 0 }: Navigatio
                       </div>
                     )}
                     <div className="flex flex-col">
-                      <span className="block text-sm text-gray-700">
+                      <span className="block text-sm text-gray-700 dark:text-gray-300">
                         {currentUser.email}
                       </span>
                       {commentsCount > 0 && (
@@ -110,7 +111,7 @@ export default function Navigation({ currentUser, commentsCount = 0 }: Navigatio
               <div className="flex items-center space-x-3">
                 <Link 
                   href="/auth" 
-                  className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                  className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors dark:text-gray-300 dark:hover:text-white"
                 >
                   Login
                 </Link>
@@ -122,13 +123,14 @@ export default function Navigation({ currentUser, commentsCount = 0 }: Navigatio
                 </Link>
               </div>
             )}
+             <ThemeToggleButton />
           </div>
 
           {/* Mobile menu button */}
           <div className="md:hidden">
             <button
               onClick={toggleMenu}
-              className="text-gray-700 hover:text-blue-600 focus:outline-none focus:text-blue-600 transition-colors"
+              className="text-gray-700 hover:text-blue-600 focus:outline-none focus:text-blue-600 transition-colors dark:text-gray-300 dark:hover:text-white"
               aria-label="Hide menu"
             >
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -144,11 +146,11 @@ export default function Navigation({ currentUser, commentsCount = 0 }: Navigatio
 
         {/* Mobile menu */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 py-4">
+          <div className="md:hidden border-t border-gray-200 py-4 dark:border-gray-700">
             <div className="space-y-2">
               <Link 
                 href="/" 
-                className="block text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium transition-colors"
+                className="block text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium transition-colors dark:text-gray-300 dark:hover:text-white"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Home
@@ -170,7 +172,7 @@ export default function Navigation({ currentUser, commentsCount = 0 }: Navigatio
                       </div>
                     )}
                     <div className="flex flex-col">
-                      <span className="text-sm text-gray-700">
+                      <span className="text-sm text-gray-700 dark:text-gray-300">
                         {currentUser.email}
                       </span>
                       {commentsCount > 0 && (
@@ -192,7 +194,7 @@ export default function Navigation({ currentUser, commentsCount = 0 }: Navigatio
                 <div className="space-y-2">
                   <Link 
                     href="/auth" 
-                    className="block text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium transition-colors"
+                    className="block text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium transition-colors dark:text-gray-300 dark:hover:text-white"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Login
@@ -204,6 +206,7 @@ export default function Navigation({ currentUser, commentsCount = 0 }: Navigatio
                   >
                     Registration
                   </Link>
+                  <ThemeToggleButton />
                 </div>
               )}
             </div>
