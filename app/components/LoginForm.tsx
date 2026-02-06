@@ -3,6 +3,7 @@
 import { LoginFormProps } from '../types/interfaces';
 import { useActionState } from 'react';
 import { useState } from 'react';
+import { useTheme } from 'next-themes';
 import { z } from 'zod';
 import { signInAction } from '../../firebase/actions';
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -26,6 +27,7 @@ export default function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormPr
   const [fieldErrors, setFieldErrors] = useState<Record<string, string | undefined>>({});
   const [submitMessage, setSubmitMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { theme } = useTheme();
   
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -101,15 +103,15 @@ export default function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormPr
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
+    <div className="max-w-md mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg dark:shadow-gray-900/20">
+      <h1 className="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-white">
         Login
       </h1>
       
       <form onSubmit={onSubmit} className="space-y-6">
         {/* Email */}
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Email *
           </label>
           <input
@@ -119,7 +121,7 @@ export default function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormPr
             value={formData.email || ''}
             onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
             autoComplete="email"
-            className={`mt-1 block w-full px-3 py-2 border ${fieldErrors.email ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
+            className={`mt-1 block w-full px-3 py-2 border ${fieldErrors.email ? 'border-red-300' : 'border-gray-300 dark:border-gray-600'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400`}
             placeholder="Enter your email..."
           />
           {fieldErrors.email && (
@@ -129,7 +131,7 @@ export default function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormPr
 
         {/* Password */}
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Password *
           </label>
           <input
@@ -139,7 +141,7 @@ export default function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormPr
             type="password"
             id="password"
             autoComplete="current-password"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
             placeholder="Enter your password..."
           />
           {fieldErrors.password && (
@@ -151,8 +153,8 @@ export default function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormPr
         {submitMessage && (
           <div className={`p-4 rounded-md ${
             submitMessage.includes('successful') 
-              ? 'bg-green-100 text-green-800' 
-              : 'bg-red-100 text-red-800'
+              ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' 
+              : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
           }`}>
             {submitMessage}
           </div>
@@ -162,7 +164,7 @@ export default function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormPr
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-blue-700 dark:hover:bg-blue-800"
           >
             {isSubmitting ? 'Login...' : 'Login'}
           </button>
@@ -171,7 +173,7 @@ export default function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormPr
             <button
               type="button"
               onClick={onSwitchToRegister}
-              className="w-full bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              className="w-full bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:bg-gray-600 dark:hover:bg-gray-700"
             >
               No account? Register
             </button>

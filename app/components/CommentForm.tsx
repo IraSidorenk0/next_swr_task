@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTheme } from 'next-themes';
 import { z } from 'zod';
 import { CommentFormProps } from '../types/interfaces';
 import { useFetchComments } from '../../firebase-actions/useComments';
@@ -23,6 +24,7 @@ export default function CommentForm({ postId, onSuccess, currentUser }: CommentF
     content: ''
   });
   const [fieldErrors, setFieldErrors] = useState<Record<string, string | undefined>>({});
+  const { theme } = useTheme();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -85,24 +87,24 @@ export default function CommentForm({ postId, onSuccess, currentUser }: CommentF
 
   if (!currentUser) {
     return (
-      <div className="card p-6 text-center animate-fade-in">
+      <div className="card p-6 text-center animate-fade-in dark:bg-gray-800 dark:border-gray-700">
         <div className="text-4xl mb-3">🔒</div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Authorization required</h3>
-        <p className="text-gray-600 text-sm mb-4">To add a comment, you need to log in to the system</p>
-        <p className="text-xs text-gray-500">Log in through the navigation menu at the top of the page</p>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Authorization required</h3>
+        <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">To add a comment, you need to log in to the system</p>
+        <p className="text-xs text-gray-500 dark:text-gray-500">Log in through the navigation menu at the top of the page</p>
       </div>
     );
   }
 
   return (
-    <div className="card p-6 animate-fade-in">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+    <div className="card p-6 animate-fade-in dark:bg-gray-800 dark:border-gray-700">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
         ✍️ Add comment
       </h3>
       
       <form onSubmit={onSubmit} className="space-y-4">
         <div>
-          <label htmlFor="content" className="form-label">
+          <label htmlFor="content" className="form-label dark:text-gray-300">
             💬 Your comment *
           </label>
           <textarea
@@ -110,7 +112,7 @@ export default function CommentForm({ postId, onSuccess, currentUser }: CommentF
             onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
             id="content"
             rows={4}
-            className="form-textarea"
+            className="form-textarea dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
             placeholder="Write your comment..."
           />
           {fieldErrors.content && (
@@ -122,8 +124,8 @@ export default function CommentForm({ postId, onSuccess, currentUser }: CommentF
         {submitMessage && (
           <div className={`p-3 rounded-md text-sm ${
             submitMessage.includes('success') 
-              ? 'bg-green-100 text-green-800' 
-              : 'bg-red-100 text-red-800'
+              ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' 
+              : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
           }`}>
             {submitMessage}
           </div>

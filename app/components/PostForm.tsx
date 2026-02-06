@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTheme } from 'next-themes';
 import { z } from 'zod';
 import { useSession } from 'next-auth/react';
 import { usePosts } from '../../firebase-actions/usePosts';
@@ -54,6 +55,7 @@ export default function PostForm({
 }: PostFormProps) {
   
   const { data: session, status } = useSession();
+  const { theme } = useTheme();
   const loading = status === 'loading';
   const error = null; // useSession handles errors differently
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -196,23 +198,23 @@ export default function PostForm({
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">Authorization required</h2>
-          <p className="text-gray-600">To create a post, you need to log in to the system</p>
+          <h2 className="text-2xl font-bold mb-4 dark:text-white">Authorization required</h2>
+          <p className="text-gray-600 dark:text-gray-400">To create a post, you need to log in to the system</p>
         </div>
       </div>
     );
   } 
 
   return (
-    <div className="max-w-2xl mx-auto card p-6 animate-fade-in">
-      <h3 className="text-responsive-lg font-bold mb-6 text-center text-gray-900 flex items-center justify-center gap-2" >
+    <div className="max-w-2xl mx-auto card p-6 animate-fade-in dark:bg-gray-800 dark:border-gray-700">
+      <h3 className="text-responsive-lg font-bold mb-6 text-center text-gray-900 dark:text-white flex items-center justify-center gap-2" >
         {isEditing ? '✍️ Edit post' : '✍️ Create new post'}
       </h3>        
       
       <form onSubmit={handleFormSubmit} className="space-y-6">
         {/* Post title */}
         <div>
-          <label htmlFor="title" className="form-label">
+          <label htmlFor="title" className="form-label dark:text-gray-300">
             📝 Title *
           </label>
           <input
@@ -220,7 +222,7 @@ export default function PostForm({
             onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
             type="text"
             id="title"
-            className="form-input"
+            className="form-input dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
             placeholder="Enter post title..."
           />
           {fieldErrors.title && (
@@ -230,7 +232,7 @@ export default function PostForm({
 
         {/* Main content */}
         <div>
-          <label htmlFor="content" className="form-label">
+          <label htmlFor="content" className="form-label dark:text-gray-300">
             📄 Content *
           </label>
           <textarea
@@ -238,7 +240,7 @@ export default function PostForm({
             onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
             id="content"
             rows={8}
-            className="form-textarea"
+            className="form-textarea dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
             placeholder="Enter post content..."
           />
           {fieldErrors.content && (

@@ -17,7 +17,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       revalidateOnReconnect: false,
       dedupingInterval: 0,
     }}>
-    <html lang="ru" className="h-full">
+    <html lang="es" className="h-full dark">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>

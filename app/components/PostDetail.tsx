@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTheme } from 'next-themes';
 import InlineNotice from './InlineNotice';
 import CommentForm from './CommentForm';
 import CommentList from './CommentList';
@@ -12,6 +13,7 @@ import { PostDetailProps } from '../types/interfaces';
 export default function PostDetail({ postId, currentUser, currentPost }: PostDetailProps) {
   const [loading, setLoading] = useState(!currentPost);
   const [liking, setLiking] = useState(false);
+  const { theme } = useTheme();
   const { likedPostIds, toggleLike, isLoading, error } = useLikedPosts(currentUser?.uid);
   const { posts } = usePosts();
   const isLiked = currentPost ? likedPostIds.includes(currentPost.id) : false;
@@ -70,7 +72,7 @@ export default function PostDetail({ postId, currentUser, currentPost }: PostDet
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="text-lg">Loading post...</div>
+        <div className="text-lg dark:text-white">Loading post...</div>
       </div>
     );
   }
@@ -79,20 +81,20 @@ export default function PostDetail({ postId, currentUser, currentPost }: PostDet
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="text-center">
-          <h2 className="text-xl font-bold mb-2">Post not found</h2>
-          <p className="text-gray-600">The requested post does not exist</p>
+          <h2 className="text-xl font-bold mb-2 dark:text-white">Post not found</h2>
+          <p className="text-gray-600 dark:text-gray-400">The requested post does not exist</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container-responsive py-8 animate-fade-in">
+    <div className="bg-white dark:bg-gray-800 container-responsive py-8 animate-fade-in">
       {/* Back Button */}
       <div className="mb-8">
         <button
           onClick={() => router.push('/')}
-          className="btn btn-outline flex items-center gap-2 hover:gap-3 transition-all"
+          className="btn btn-outline flex items-center gap-2 hover:gap-3 transition-all dark:text-white"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -102,20 +104,20 @@ export default function PostDetail({ postId, currentUser, currentPost }: PostDet
       </div>
 
       {/* Post Content */}
-      <article className="card p-8 mb-12 animate-slide-in">
+      <article className="bg-white dark:bg-gray-800 card p-8 mb-12 animate-slide-in">
         {/* Post Header */}
         <header className="mb-8">
-          <h1 className="text-responsive-xl font-bold text-gray-900 mb-6 leading-tight">{currentPost?.title}</h1>
+          <h1 className="text-responsive-xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">{currentPost?.title}</h1>
           
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold mr-3">
                   {currentPost?.authorName?.charAt(0).toUpperCase()}
                 </div>
                 <div className="flex flex-col">
-                  <p className="font-medium text-gray-900">{currentPost?.authorName}</p>
-                  <p className="text-xs text-gray-500">Author</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{currentPost?.authorName}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Author</p>
                 </div>
               </div>
               
@@ -163,22 +165,22 @@ export default function PostDetail({ postId, currentUser, currentPost }: PostDet
               />
             </div>
           )}
-          <div className="text-gray-800 leading-relaxed whitespace-pre-wrap text-responsive-base">
+          <div className="text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap text-responsive-base">
             {currentPost?.content}
           </div>
         </div>
 
         {/* Tags */}
         {currentPost?.tags && currentPost.tags.length > 0 && (
-          <div className="border-t border-gray-200 pt-6">
-            <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center">
               🏷️ Tags
             </h3>
             <div className="flex flex-wrap gap-2">
               {currentPost?.tags.map((tag, index) => (
                 <span
                   key={index}
-                  className="bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 text-sm font-medium px-4 py-2 rounded-full border border-blue-200 hover:shadow-sm transition-shadow"
+                  className="bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900 text-blue-800 dark:text-blue-200 text-sm font-medium px-4 py-2 rounded-full border border-blue-200 dark:border-blue-700 hover:shadow-sm transition-shadow"
                 >
                   #{tag}
                 </span>
@@ -190,8 +192,8 @@ export default function PostDetail({ postId, currentUser, currentPost }: PostDet
 
       {/* Comments Section */}
       <div className="space-y-8">
-        <div className="border-t border-gray-200 pt-8">
-          <h2 className="text-responsive-lg font-bold text-gray-900 mb-6 flex items-center">
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-8">
+          <h2 className="text-responsive-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center">
             💬 Comments
           </h2>
           

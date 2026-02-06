@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { useActionState } from 'react';
+import { useTheme } from 'next-themes';
 import { z } from 'zod';
 import { registerAndSignInAction } from '../../firebase/actions';
 import { signInWithCustomToken } from 'firebase/auth';
@@ -44,6 +45,7 @@ export default function RegistrationForm({ onSuccess, onSwitchToLogin }: Registr
     confirmPassword: '',
     displayName: ''
   });
+  const { theme } = useTheme();
 
   const [fieldErrors, setFieldErrors] = useState<Record<string, string | undefined>>({});
   const [serverError, setServerError] = useState<string | null>(null);
@@ -131,15 +133,15 @@ export default function RegistrationForm({ onSuccess, onSwitchToLogin }: Registr
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
+    <div className="max-w-md mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg dark:shadow-gray-900/20">
+      <h1 className="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-white">
         Registration
       </h1>
       
       <form onSubmit={onSubmit} className="space-y-6">
         {/* Display Name */}
         <div>
-          <label htmlFor="displayName" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="displayName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             User name *
           </label>
           <input
@@ -148,7 +150,7 @@ export default function RegistrationForm({ onSuccess, onSwitchToLogin }: Registr
             onChange={(e) => setFormData(prev => ({ ...prev, displayName: e.target.value }))}
             type="text"
             id="displayName"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
             placeholder="Enter your name..."
           />
           {fieldErrors.displayName && (
@@ -158,7 +160,7 @@ export default function RegistrationForm({ onSuccess, onSwitchToLogin }: Registr
 
         {/* Email */}
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Email *
           </label>
           <input
@@ -167,7 +169,7 @@ export default function RegistrationForm({ onSuccess, onSwitchToLogin }: Registr
             onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
             type="email"
             id="email"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
             placeholder="Enter your email..."
           />
           {fieldErrors.email && (
@@ -177,7 +179,7 @@ export default function RegistrationForm({ onSuccess, onSwitchToLogin }: Registr
 
         {/* Password */}
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Password *
           </label>
           <input
@@ -186,7 +188,7 @@ export default function RegistrationForm({ onSuccess, onSwitchToLogin }: Registr
             onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
             type="password"
             id="password"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
             placeholder="Enter your password (minimum 6 characters)..."
           />
           {fieldErrors.password && (
@@ -196,7 +198,7 @@ export default function RegistrationForm({ onSuccess, onSwitchToLogin }: Registr
 
         {/* Confirm Password */}
         <div>
-          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Confirm Password *
           </label>
           <input
@@ -205,7 +207,7 @@ export default function RegistrationForm({ onSuccess, onSwitchToLogin }: Registr
             onChange={(e) => setFormData(prev => ({ ...prev, confirmPassword: e.target.value }))}
             type="password"
             id="confirmPassword"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
             placeholder="Confirm Password..."
           />
           {fieldErrors.confirmPassword && (
@@ -217,8 +219,8 @@ export default function RegistrationForm({ onSuccess, onSwitchToLogin }: Registr
         {(state || serverError) && (
           <div className={`p-4 rounded-md ${
             state?.success || (!state?.error && !serverError)
-              ? 'bg-green-100 text-green-800' 
-              : 'bg-red-100 text-red-800'
+              ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' 
+              : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
           }`}>
             {state?.success ? 'Registration successful! Signing you in...' : 
              serverError || state?.error || 'An error occurred'}
@@ -230,7 +232,7 @@ export default function RegistrationForm({ onSuccess, onSwitchToLogin }: Registr
           <button
             type="submit"
             disabled={isPending}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-blue-700 dark:hover:bg-blue-800"
           >
             {isPending ? 'Registration...' : 'Register'}
           </button>
@@ -239,7 +241,7 @@ export default function RegistrationForm({ onSuccess, onSwitchToLogin }: Registr
             <button
               type="button"
               onClick={onSwitchToLogin}
-              className="w-full bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              className="w-full bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:bg-gray-600 dark:hover:bg-gray-700"
             >
               Already have an account? Login
             </button>

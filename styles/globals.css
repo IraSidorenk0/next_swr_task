@@ -109,7 +109,16 @@ body {
 
 .animate-slide-in {
   animation: slideIn 0.3s ease-out;
+  animation-delay: var(--animation-delay, 0s);
 }
+
+/* Comment animation delays */
+.comment-delay-0 { --animation-delay: 0s; }
+.comment-delay-1 { --animation-delay: 0.1s; }
+.comment-delay-2 { --animation-delay: 0.2s; }
+.comment-delay-3 { --animation-delay: 0.3s; }
+.comment-delay-4 { --animation-delay: 0.4s; }
+.comment-delay-5 { --animation-delay: 0.5s; }
 
 /* Card styles */
 .card {
