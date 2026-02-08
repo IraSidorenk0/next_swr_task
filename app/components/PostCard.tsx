@@ -178,7 +178,7 @@ export default function PostCard({
           <>
             {/* Post header with author avatar */}
             <div className="flex items-start gap-3 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-lg">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-lg">
                 {post.authorName?.charAt(0).toUpperCase() || 'A'}
               </div>
               <div className="flex-1 min-w-0">
@@ -241,8 +241,8 @@ export default function PostCard({
                 }}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                   isLiked 
-                    ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50' 
-                    : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    ? 'btn border text-red-600 dark:bg-red-900/30 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50' 
+                    : 'btn border text-gray-600 dark:bg-gray-700 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
                 }`}
               >
                 <span className={`transition-transform duration-200 ${isLiked ? 'scale-110' : 'scale-100'}`}>
@@ -299,13 +299,13 @@ export default function PostCard({
       </header>
       
       {/* Interactive border accent */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
       
       {/* Corner decorations */}
-      <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-blue-500/20 dark:border-blue-400/20 rounded-tl-lg" />
-      <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-purple-500/20 dark:border-purple-400/20 rounded-tr-lg" />
-      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-pink-500/20 dark:border-pink-400/20 rounded-bl-lg" />
-      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-orange-500/20 dark:border-orange-400/20 rounded-br-lg" />
+      <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-blue-600/20 dark:border-blue-400/20 rounded-tl-lg" />
+      <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-purple-600/20 dark:border-purple-400/20 rounded-tr-lg" />
+      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-pink-600/20 dark:border-pink-400/20 rounded-bl-lg" />
+      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-orange-600/20 dark:border-orange-400/20 rounded-br-lg" />
     </article>
   );
 }

@@ -10,34 +10,21 @@ export default function CommentList({ postId }: CommentListProps) {
     if (!date) return 'Unknown date';
     
     try {
+      const dateObj = date instanceof Date ? date : new Date(date);
       
-      if (date instanceof Date) {
-        return date.toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        });
-      }
-      // Handle regular Date
-      return new Date(date).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
+      // Use a consistent format that doesn't depend on locale
+      const year = dateObj.getFullYear();
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const day = String(dateObj.getDate()).padStart(2, '0');
+      const hours = String(dateObj.getHours() % 12 || 12).padStart(2, '0');
+      const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+      const ampm = dateObj.getHours() >= 12 ? 'PM' : 'AM';
+      
+      return `${month}/${day}/${year} ${hours}:${minutes} ${ampm}`;
     } catch (error) {
       return 'Date unknown';
     }
   };
-
-  // Pre-calculate delays to avoid hydration mismatch
-  const getAnimationDelay = (index: number) => `${index * 0.1}s`;
-
-  // Create CSS custom properties for animation delays
-  const animationDelays = comments.map((_, index) => `${index * 0.1}s`).join(', ');
 
   if (loading) {
     return (
@@ -76,7 +63,7 @@ export default function CommentList({ postId }: CommentListProps) {
       </div>
 
       {comments.length === 0 ? (
-        <div className="text-center py-12 card animate-slide-in">
+        <div className="bg-white dark:bg-gray-800 text-center py-12 card animate-slide-in">
           <div className="text-5xl mb-4">🤷</div>
           <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">No comments yet</h3>
           <p className="text-sm text-gray-500 dark:text-gray-400">Be the first to leave a comment!</p>
@@ -86,8 +73,7 @@ export default function CommentList({ postId }: CommentListProps) {
           {comments.map((comment, index) => (
             <div 
               key={comment.id} 
-              className={`bg-white dark:bg-gray-800 card p-6 animate-slide-in hover:shadow-lg transition-all comment-delay-${index}`}
-              style={{ '--animation-delay': `${index * 0.1}s` } as React.CSSProperties}
+              className="bg-white dark:bg-gray-800 card p-6 animate-slide-in hover:shadow-lg transition-all"
             >
               {/* Comment Header */}
               <div className="flex items-start gap-4 mb-4">

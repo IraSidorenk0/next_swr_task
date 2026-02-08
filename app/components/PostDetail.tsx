@@ -41,26 +41,21 @@ export default function PostDetail({ postId, currentUser, currentPost }: PostDet
     }
   };
 
-  const formatDate = (date: Date | undefined) => {
+  const formatDate = (date: Date | string | undefined) => {
     if (!date) return 'Unknown date';
     
     try {
-      if (date instanceof Date) {
-        return date.toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        });
-      }
-      return new Date(date).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
+      const dateObj = date instanceof Date ? date : new Date(date);
+      
+      // Use UTC to ensure consistent server/client rendering
+      const year = dateObj.getUTCFullYear();
+      const month = String(dateObj.getUTCMonth() + 1).padStart(2, '0');
+      const day = String(dateObj.getUTCDate()).padStart(2, '0');
+      const hours = String(dateObj.getUTCHours() % 12 || 12).padStart(2, '0');
+      const minutes = String(dateObj.getUTCMinutes()).padStart(2, '0');
+      const ampm = dateObj.getUTCHours() >= 12 ? 'PM' : 'AM';
+      
+      return `${month}/${day}/${year} ${hours}:${minutes} ${ampm}`;
     } catch (error) {
       return 'Date unknown';
     }
@@ -94,7 +89,7 @@ export default function PostDetail({ postId, currentUser, currentPost }: PostDet
       <div className="mb-8">
         <button
           onClick={() => router.push('/')}
-          className="btn btn-outline flex items-center gap-2 hover:gap-3 transition-all dark:text-white"
+          className="bg-white dark:bg-gray-700 btn btn-outline flex items-center gap-2 hover:gap-3 transition-all dark:text-white"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -112,7 +107,7 @@ export default function PostDetail({ postId, currentUser, currentPost }: PostDet
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold mr-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white font-semibold mr-3">
                   {currentPost?.authorName?.charAt(0).toUpperCase()}
                 </div>
                 <div className="flex flex-col">
@@ -125,7 +120,7 @@ export default function PostDetail({ postId, currentUser, currentPost }: PostDet
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                 </svg>
-                <span>{formatDate(currentPost?.createdAt ? new Date(currentPost.createdAt) : undefined)}</span>
+                <span>{formatDate(currentPost?.createdAt)}</span>
               </div>
               
               <div className="flex items-center gap-1">

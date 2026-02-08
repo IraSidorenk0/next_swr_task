@@ -164,13 +164,15 @@ export default function PostList({ currentUser }: {
         return 'Date unknown';
       }
       
-      return dateObj.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
+      // Use a consistent format that doesn't depend on locale
+      const year = dateObj.getFullYear();
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const day = String(dateObj.getDate()).padStart(2, '0');
+      const hours = String(dateObj.getHours() % 12 || 12).padStart(2, '0');
+      const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+      const ampm = dateObj.getHours() >= 12 ? 'PM' : 'AM';
+      
+      return `${month}/${day}/${year} ${hours}:${minutes} ${ampm}`;
     } catch (error) {
       console.error('Error formatting date:', error);
       return 'Date unknown';
