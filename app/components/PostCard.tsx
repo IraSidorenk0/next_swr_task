@@ -100,17 +100,14 @@ export default function PostCard({
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-purple-50/30 to-pink-50/20 dark:from-blue-900/10 dark:via-purple-900/5 dark:to-pink-900/5 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       
       {/* Subtle animated pattern overlay - hydration safe */}
-      <div className="absolute inset-0 opacity-5 dark:opacity-10">
+      <div className="absolute inset-0 ">
         <div className="absolute inset-0 bg-gradient-to-br from-transparent via-blue-100/5 to-purple-100/5 dark:via-blue-900/5 dark:to-purple-900/5" 
              style={{
-               backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(156, 163, 175, 0.05) 10px, rgba(156, 163, 175, 0.05) 20px)`,
                backgroundSize: '20px 20px'
              }} />
       </div>
       
       {/* Floating accent elements */}
-      <div className="absolute top-2 right-2 w-20 h-20 bg-gradient-to-br from-blue-400/10 to-purple-400/10 dark:from-blue-600/10 dark:to-purple-600/10 rounded-full blur-xl animate-pulse" />
-      <div className="absolute bottom-4 left-4 w-16 h-16 bg-gradient-to-tr from-pink-400/10 to-orange-400/10 dark:from-pink-600/10 dark:to-orange-600/10 rounded-full blur-lg animate-pulse delay-1000" />
       
       <header className="mb-4 relative z-10">
         {isEditingThisPost ? (
@@ -258,7 +255,7 @@ export default function PostCard({
                       e.preventDefault();
                       router.push(`/auth?redirect=${encodeURIComponent(`/posts/${post.id}/edit`)}`);
                     }}
-                    className="flex items-center gap-1 px-3 py-1.5 text-sm bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-all duration-200 font-medium"
+                    className="flex flex-center items-center bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-lg"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -270,7 +267,7 @@ export default function PostCard({
                       e.preventDefault();
                       onDelete(post);
                     }}
-                    className="flex items-center gap-1 px-3 py-1.5 text-sm bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/50 transition-all duration-200 font-medium"
+                    className="flex flex-center items-center bg-red-600 hover:bg-red-700 text-white text-sm font-medium py-2 px-4 rounded-lg"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -300,12 +297,7 @@ export default function PostCard({
       
       {/* Interactive border accent */}
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
-      
-      {/* Corner decorations */}
-      <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-blue-600/20 dark:border-blue-400/20 rounded-tl-lg" />
-      <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-purple-600/20 dark:border-purple-400/20 rounded-tr-lg" />
-      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-pink-600/20 dark:border-pink-400/20 rounded-bl-lg" />
-      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-orange-600/20 dark:border-orange-400/20 rounded-br-lg" />
+            
     </article>
   );
 }

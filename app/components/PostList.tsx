@@ -190,7 +190,7 @@ export default function PostList({ currentUser }: {
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Posts</h1>
         <button
           onClick={() => currentUser ? setShowPostForm(true) : setShowAuthModal(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+          className="bg-blue-600 font-medium hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
         >
           {currentUser ? 'Create Post' : 'Sign In to Post'}
         </button>

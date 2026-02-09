@@ -16,8 +16,8 @@ let adminApp: App;
 if (!getApps().length) {
   adminApp = initializeApp({
     credential: cert(serviceAccount),
-    databaseURL: 'https://my-project-1516289182804-default-rtdb.firebaseio.com',
-    projectId: 'my-project-1516289182804'
+    databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
+    projectId: process.env.FIREBASE_ADMIN_PROJECT_ID
   });
 } else {
   adminApp = getApps()[0];

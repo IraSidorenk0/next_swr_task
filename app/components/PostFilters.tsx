@@ -30,7 +30,7 @@ export const PostFilters = ({
     <div className="bg-white dark:bg-gray-800 mb-6 p-4 rounded-lg">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="form-label">👤 Author</label>
+          <label className="form-label text-gray-700 dark:text-gray-300">👤 Author</label>
           <input
             type="text"
             value={localAuthorFilter}
@@ -40,7 +40,7 @@ export const PostFilters = ({
           />
         </div>
         <div>
-          <label className="form-label">#️⃣ Tag</label>
+          <label className="form-label text-gray-700 dark:text-gray-300">#️⃣ Tag</label>
           <input
             type="text"
             value={localTagFilter}
@@ -53,13 +53,13 @@ export const PostFilters = ({
       <div className="flex space-x-2 mt-4">
         <button
           onClick={handleApply}
-          className="px-3 py-1.5 text-md bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          className="px-3 py-1.5 font-medium text-md bg-blue-600 text-white rounded-md hover:bg-blue-700"
         >
           Apply filters
         </button>
         <button
           onClick={handleReset}
-          className="px-3 py-1.5 text-md bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
+          className="px-3 py-1.5 font-medium text-md bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
         >
           Reset filters
         </button>

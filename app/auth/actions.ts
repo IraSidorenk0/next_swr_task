@@ -1,6 +1,7 @@
 'server';
 
 import { adminAuth } from '../../firebase/firebase-admin';
+import { verifyUserCredentials } from '../../firebase/user-credentials';
 import { cookies } from 'next/headers';
 
 export async function getSession() {
@@ -18,12 +19,19 @@ export async function getSession() {
 
 export async function signIn(email: string, password: string) {
   try {
-    // In a real app, verify the password here
-    const user = await adminAuth.getUserByEmail(email);
+    // Firebase Admin only: Verify credentials using custom store
+    const credentials = await verifyUserCredentials(email, password);
     
-    // Create session cookie
+    if (!credentials) {
+      return { success: false, error: 'Invalid credentials' };
+    }
+
+    // Create custom token for the user
+    const customToken = await adminAuth.createCustomToken(credentials.uid);
+    
+    // Create session cookie from custom token
     const sessionCookie = await adminAuth.createSessionCookie(
-      await adminAuth.createCustomToken(user.uid), 
+      customToken, 
       { expiresIn: 60 * 60 * 24 * 5 * 1000 } // 5 days
     );
 
@@ -37,10 +45,10 @@ export async function signIn(email: string, password: string) {
       path: '/',
     });
 
-    return { success: true };
+    return { success: true, uid: credentials.uid };
   } catch (error) {
     console.error('Sign in error:', error);
-    return { success: false, error: 'Invalid credentials' };
+    return { success: false, error: 'Authentication failed' };
   }
 }
 

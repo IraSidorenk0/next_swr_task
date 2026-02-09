@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { adminAuth } from '../../../../firebase/firebase-admin';
-import { cookies } from 'next/headers';
+import { createUserCredentials } from '../../../../firebase/user-credentials';
 
 export async function POST(request: Request) {
   try {
@@ -19,6 +19,9 @@ export async function POST(request: Request) {
       password,
       displayName,
     });
+
+    // Store password credentials for firebase-admin only verification
+    await createUserCredentials(userRecord.uid, email, password);
 
     // Create a custom token for the new user so they can be signed in immediately
     const customToken = await adminAuth.createCustomToken(userRecord.uid);

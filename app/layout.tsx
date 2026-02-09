@@ -4,6 +4,9 @@ import { getCurrentUser } from "../firebase/auth";
 import { Toaster } from 'react-hot-toast';
 import { SWRConfig } from 'swr';
 import { Providers } from './providers';
+
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'Best Blog',
   description: 'A blog platform built with Next.js and Firebase',
