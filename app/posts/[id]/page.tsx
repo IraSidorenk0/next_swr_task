@@ -7,13 +7,13 @@ import { getCurrentUser } from '@/firebase/auth';
 import { getPostByIdServer } from '@/firebase/server-actions';
 
 type Props = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 export default async function PostPage({ params }: Props) {
-  const { id: postId } = params;
+  const { id: postId } = await params;
 
   let isOnline = true;
   try {

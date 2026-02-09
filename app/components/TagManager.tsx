@@ -22,7 +22,7 @@ export default function TagManager({ tags, maxTags = 10, onTagsChange, error }: 
 
   return (
     <div>
-      <label className="form-label">
+      <label className="form-label dark:text-white">
         🏷️ Tags * (minimum 1, maximum {maxTags})
       </label>
       <div className="space-y-2">
@@ -32,7 +32,7 @@ export default function TagManager({ tags, maxTags = 10, onTagsChange, error }: 
               type="text"
               value={tag}
               onChange={(e) => updateTag(index, e.target.value)}
-              className="form-input flex-1"
+              className="form-input flex-1 dark:placeholder-white/80 dark:text-white"
               placeholder={`Tag ${index + 1}`}
             />
             <button

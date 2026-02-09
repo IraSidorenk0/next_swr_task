@@ -51,9 +51,16 @@ export default function PostCard({
   const isEditingThisPost = isEditing && editingPostId === post.id;
   const [isExpanded, setIsExpanded] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
   const contentRef = useRef<HTMLParagraphElement>(null);
 
   const { toggleLike, likedPostIds } = useLikedPosts(currentUser?.uid);
+
+  const handleReadMore = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setIsNavigating(true);
+    router.push(`/posts/${post.id}`);
+  };
 
   const onToggleLike = async (post: Post) => {
     if (!currentUser) {
@@ -238,14 +245,14 @@ export default function PostCard({
                 }}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                   isLiked 
-                    ? 'btn border text-red-600 dark:bg-red-900/30 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50' 
-                    : 'btn border text-gray-600 dark:bg-gray-700 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    ? 'border text-red-600 dark:bg-red-900/30 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50' 
+                    : 'border text-gray-600 dark:bg-gray-700 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
                 }`}
               >
                 <span className={`transition-transform duration-200 ${isLiked ? 'scale-110' : 'scale-100'}`}>
                   {isLiked ? '❤️' : '🤍'}
                 </span>
-                <span>{post.likes || 0} {post.likes === 1 ? 'like' : 'likes'}</span>
+                <span className="text-gray-600 dark:text-gray-200">{post.likes || 0} {post.likes === 1 ? 'like' : 'likes'}</span>
               </button>
               
               {isOwnPost && (
@@ -282,15 +289,28 @@ export default function PostCard({
         
         {!isEditingThisPost && (
           <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-600">
-            <Link
-              href={`/posts/${post.id}`}
-              className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-semibold transition-all duration-200 group"
+            <button
+              onClick={handleReadMore}
+              disabled={isNavigating}
+              className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-semibold transition-all duration-200 group disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span>Read more</span>
-              <svg className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
+              {isNavigating ? (
+                <>
+                  <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span>Loading...</span>
+                </>
+              ) : (
+                <>
+                  <span>Read more</span>
+                  <svg className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </>
+              )}
+            </button>
           </div>
         )}
       </header>
