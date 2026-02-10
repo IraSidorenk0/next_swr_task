@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { UserInfoProps } from '../types/interfaces';
 
 export default function UserInfo({ user }: UserInfoProps) {
@@ -15,13 +14,13 @@ export default function UserInfo({ user }: UserInfoProps) {
           {(user.displayName || user.email || 'U').charAt(0).toUpperCase()}
         </div>
         <div>
-          <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+          <p className="text-md font-medium text-blue-900 dark:text-blue-100">
             {user.displayName || user.email || 'Anonymous'}
           </p>
-          <p className="text-sm text-blue-600 dark:text-blue-400">
+          <p className="text-sm text-gray-600 dark:text-gray-200">
             ID: {user.uid.slice(0, 8)}...
           </p>
-          <p className="text-sm text-blue-600 dark:text-blue-400">
+          <p className="text-sm text-gray-600 dark:text-gray-200">
             Email: {user.email}
           </p>
         </div>
