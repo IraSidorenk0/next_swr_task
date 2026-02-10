@@ -9,7 +9,6 @@ import { PostFormData } from '../types';
 import toast from 'react-hot-toast';
 
 import TagManager from './TagManager';
-import UserInfo from './UserInfo';
 import LoadingSpinner from './LoadingSpinner';
 import { AppUser } from '../types';
 
@@ -254,10 +253,6 @@ export default function PostForm({
           onTagsChange={handleTagsChange}
           error={fieldErrors.tags}
         />
-
-
-        {/* User info */}
-        <UserInfo user={currentUser} />
 
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-3">

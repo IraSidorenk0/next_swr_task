@@ -74,19 +74,13 @@ export default function Navigation({ currentUser, commentsCount = 0 }: Navigatio
             {currentUser ? (
               <>
                 <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-2">
-                    {currentUser.photoURL ? (
-                      <Image 
-                        className="h-8 w-8 rounded-full" 
-                        src={currentUser.photoURL} 
-                        alt="User avatar"
-                        referrerPolicy="no-referrer"
-                      />
-                    ) : (
-                      <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
-                        {(currentUser.displayName || currentUser.email || 'U').charAt(0).toUpperCase()}
-                      </div>
-                    )}
+                  <Link
+                    href="/profile"
+                    className="flex items-center space-x-2"
+                  >
+                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                      {(currentUser.displayName || currentUser.email || 'U').charAt(0).toUpperCase()}
+                    </div>
                     <div className="flex flex-col">
                       <span className="block text-sm text-gray-700 dark:text-gray-300">
                         {currentUser.email}
@@ -98,7 +92,7 @@ export default function Navigation({ currentUser, commentsCount = 0 }: Navigatio
                         </div>
                       )}
                     </div>
-                  </div>
+                  </Link>
                   <button
                     onClick={handleLogout}
                     className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors"
@@ -159,29 +153,26 @@ export default function Navigation({ currentUser, commentsCount = 0 }: Navigatio
               {currentUser ? (
                 <div className="space-y-2">
                   <div className="flex items-center px-3 py-2">
-                    {currentUser.photoURL ? (
-                      <Image
-                        className="h-8 w-8 rounded-full" 
-                        src={currentUser.photoURL} 
-                        alt="User avatar"
-                        referrerPolicy="no-referrer"
-                      />
-                    ) : (
+                    <Link
+                      href="/profile"
+                      className="flex items-center"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
                       <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-semibold mr-3">
                         {(currentUser.displayName || currentUser.email || 'U').charAt(0).toUpperCase()}
                       </div>
-                    )}
-                    <div className="flex flex-col">
-                      <span className="text-sm text-gray-700 dark:text-gray-300">
-                        {currentUser.email}
-                      </span>
-                      {commentsCount > 0 && (
-                        <div className="flex items-center text-xs text-gray-500 mt-1">
-                          <span className="mr-1">❤️</span>
-                          {commentsCount} {commentsCount === 1 ? 'comment' : 'comments'}
-                        </div>
-                      )}
-                    </div>
+                      <div className="flex flex-col ml-3">
+                        <span className="text-sm text-gray-700 dark:text-gray-300">
+                          {currentUser.email}
+                        </span>
+                        {commentsCount > 0 && (
+                          <div className="flex items-center text-xs text-gray-500 mt-1">
+                            <span className="mr-1">❤️</span>
+                            {commentsCount} {commentsCount === 1 ? 'comment' : 'comments'}
+                          </div>
+                        )}
+                      </div>
+                    </Link>
                   </div>
                   <button
                     onClick={handleLogout}
