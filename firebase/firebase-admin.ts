@@ -34,7 +34,6 @@ export function initializeFirebaseAdmin() {
 }
 
 export const adminDb = getFirestore(adminApp);
-export const db = adminDb;
 export const auth = getAuth(adminApp);
 export const adminAuth = getAuth(adminApp);
 

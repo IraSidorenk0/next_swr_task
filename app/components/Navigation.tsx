@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import ThemeToggleButton from './ThemeToggleButton';
@@ -22,6 +22,7 @@ interface NavigationProps {
 export default function Navigation({ currentUser, commentsCount = 0 }: NavigationProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleLogout = async () => {
     try {
@@ -66,7 +67,7 @@ export default function Navigation({ currentUser, commentsCount = 0 }: Navigatio
           <div className="hidden md:flex items-center space-x-2">
             <Link 
               href="/" 
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors dark:text-gray-300 dark:hover:text-white"
+              className={`text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors dark:text-gray-300 dark:hover:text-white ${pathname === '/' ? 'text-purple-800 hover:text-purple-600 dark:text-green-300 dark:hover:text-green-600' : ''}`}
             >
               Home
             </Link>
@@ -76,15 +77,13 @@ export default function Navigation({ currentUser, commentsCount = 0 }: Navigatio
                 <div className="flex items-center space-x-4">
                   <Link
                     href="/profile"
-                    className="flex items-center space-x-2"
+                    className={`flex items-center space-x-2 dark:text-gray-300 ${pathname === '/profile' ? 'text-purple-800 hover:text-purple-600 dark:text-green-300 dark:hover:text-green-600' : ''}`}
                   >
                     <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
                       {(currentUser.displayName || currentUser.email || 'U').charAt(0).toUpperCase()}
                     </div>
-                    <div className="flex flex-col">
-                      <span className="block text-sm text-gray-700 dark:text-gray-300">
-                        {currentUser.email}
-                      </span>
+                    <div className="flex flex-col ">
+                      {currentUser.email}
                       {commentsCount > 0 && (
                         <div className="flex items-center text-xs text-gray-500 mt-1">
                           <span className="mr-1">❤️</span>
@@ -105,15 +104,9 @@ export default function Navigation({ currentUser, commentsCount = 0 }: Navigatio
               <div className="flex items-center space-x-3">
                 <Link 
                   href="/auth" 
-                  className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors dark:text-gray-300 dark:hover:text-white"
+                  className={`text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors dark:text-gray-300 dark:hover:text-white ${pathname === '/auth' ? 'text-purple-800 hover:text-purple-600 dark:text-green-300 dark:hover:text-green-600' : ''}`}
                 >
-                  Login
-                </Link>
-                <Link 
-                  href="/auth" 
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-                >
-                  Registration
+                  Login/Registration
                 </Link>
               </div>
             )}
@@ -155,16 +148,14 @@ export default function Navigation({ currentUser, commentsCount = 0 }: Navigatio
                   <div className="flex items-center px-3 py-2">
                     <Link
                       href="/profile"
-                      className="flex items-center"
+                      className={`flex items-center ${pathname === '/profile' ? 'text-purple-800 hover:text-purple-600 dark:text-green-300 dark:hover:text-green-600' : ''}`}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-semibold mr-3">
                         {(currentUser.displayName || currentUser.email || 'U').charAt(0).toUpperCase()}
                       </div>
                       <div className="flex flex-col ml-3">
-                        <span className="text-sm text-gray-700 dark:text-gray-300">
-                          {currentUser.email}
-                        </span>
+                        {currentUser.email}
                         {commentsCount > 0 && (
                           <div className="flex items-center text-xs text-gray-500 mt-1">
                             <span className="mr-1">❤️</span>
