@@ -67,7 +67,7 @@ export default function Navigation({ currentUser, commentsCount = 0 }: Navigatio
           <div className="hidden md:flex items-center space-x-2">
             <Link 
               href="/" 
-              className={`text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors dark:text-gray-300 dark:hover:text-white ${pathname === '/' ? 'text-purple-800 hover:text-purple-600 dark:text-green-300 dark:hover:text-green-600' : ''}`}
+              className={`text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors dark:text-gray-300 dark:hover:text-white ${pathname === '/' ? 'text-purple-800 hover:text-purple-600 dark:text-cyan-300 dark:hover:text-cyan-400' : ''}`}
             >
               Home
             </Link>
@@ -77,7 +77,7 @@ export default function Navigation({ currentUser, commentsCount = 0 }: Navigatio
                 <div className="flex items-center space-x-4">
                   <Link
                     href="/profile"
-                    className={`flex items-center space-x-2 dark:text-gray-300 ${pathname === '/profile' ? 'text-purple-800 hover:text-purple-600 dark:text-green-300 dark:hover:text-green-600' : ''}`}
+                    className={`flex items-center space-x-2 dark:text-gray-300 ${pathname === '/profile' ? 'text-purple-800 hover:text-purple-600 dark:text-cyan-300 dark:hover:text-cyan-400' : ''}`}
                   >
                     <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
                       {(currentUser.displayName || currentUser.email || 'U').charAt(0).toUpperCase()}
@@ -104,7 +104,7 @@ export default function Navigation({ currentUser, commentsCount = 0 }: Navigatio
               <div className="flex items-center space-x-3">
                 <Link 
                   href="/auth" 
-                  className={`text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors dark:text-gray-300 dark:hover:text-white ${pathname === '/auth' ? 'text-purple-800 hover:text-purple-600 dark:text-green-300 dark:hover:text-green-600' : ''}`}
+                  className={`text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors dark:text-gray-300 dark:hover:text-white ${pathname === '/auth' ? 'text-purple-800 hover:text-purple-600 dark:text-cyan-300 dark:hover:text-cyan-400' : ''}`}
                 >
                   Login/Registration
                 </Link>
@@ -148,7 +148,7 @@ export default function Navigation({ currentUser, commentsCount = 0 }: Navigatio
                   <div className="flex items-center px-3 py-2">
                     <Link
                       href="/profile"
-                      className={`flex items-center ${pathname === '/profile' ? 'text-purple-800 hover:text-purple-600 dark:text-green-300 dark:hover:text-green-600' : ''}`}
+                      className={`flex items-center ${pathname === '/profile' ? 'text-purple-800 hover:text-purple-600 dark:text-cyan-300 dark:hover:text-cyan-400' : ''}`}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-semibold mr-3">
