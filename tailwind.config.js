@@ -14,6 +14,7 @@ module.exports = {
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
+        chartreuse: 'var(--chartreuse)',
       },
       animation: {
         'fade-in': 'fadeIn 0.3s ease-out',
